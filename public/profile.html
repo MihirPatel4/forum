@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Profile</title>
+        <link rel="stylesheet" href="forum.css">
+        <script src="profile.js" defer></script>
+    </head>
+    <body>
+        <nav id="navbar">
+            <div id="navbar-left">
+                <a href="index.html">Mihir Web Forum</a>
+            </div>
+            <div id="navbar-right">
+                <a id="profile-button" href="login.html">Profile</a>
+                <a id="login-button" href="login.html">Log in/Sign up</a>
+            </div>
+        </nav>
+        <div id="profile-container">
+            <div id="profile">
+                <div id="avatar-container">
+                    <img id="avatar" src="images/avatar_default.png">
+                </div>
+                <div id="profile-details">
+                    <h2 id="profile-name"></h2>
+                    <p id="profile-join-date"></p>
+                </div>
+                <div id="edit-profile-dropdown">
+                    <button id="edit-profile-button">Edit Profile</button>
+                    <div id="edit-profile-options">
+                        <a id="edit-bio" href="#">Edit Bio</a>
+                        <a id="edit-avatar" href="#">Edit Avatar</a>
+                    </div>
+                    <div id="bio-modal">
+                        <div class="modal-content">
+                            <span class="close" id="close-bio-modal">&times;</span>
+                            <textarea id="bio-input" placeholder="Add a new bio..."></textarea>
+                            <br><br>
+                            <button id="submit-bio">Enter</button>
+                        </div>
+                    </div>
+                    <div id="avatar-modal">
+                        <div class="modal-content">
+                            <span class="close" id="close-avatar-modal">&times;</span>
+                            <label for="avatar-input">Add an image to use for your avatar (CURRENTLY NOT FUNCTIONAL): </label>
+                            <input type="file" name="avatar-input" accept="image/*">
+                            <button id="submit-avatar">Enter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p id="profile-bio"></p>
+            <div id="profile-tabs">
+                <button class="tab-button selected-tab" id="threads-tab">Threads</button>
+                <button class="tab-button" id="posts-tab">Posts</button>
+            </div>
+            <div id="profile-content">
+                <div id="profile-threads"></div>
+                <div id="profile-posts"></div>
+            </div>
+        </div>
+    </body>
+</html>

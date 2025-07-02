@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Log in</title>
+        <link rel="stylesheet" href="forum.css">
+        <script src="login.js" defer></script>
+    </head>
+    <body>
+        <nav id="navbar">
+            <div id="navbar-left">
+                <a href="index.html">Mihir Web Forum</a>
+            </div>
+            <div id="navbar-right">
+                <a href="login.html">Log in/Sign up</a>
+            </div>
+        </nav>
+        <div id="form-container">
+            <div>
+                <h2 id="login-header">Enter your email and password:</h2>
+                <label for="email">Email:</label>
+                <input id="email-input" name="email">
+                <label id="display-name-label" for="display-name" >Display Name:</label>
+                <input id="display-name-input" name="display-name" >
+                <label for="password">Password:</label>
+                <input id="pass-input" type="password" name="password">
+                <button id="login" type="submit">Log in</button>
+                <p id="error-text"></p>
+                <span id="signup-link">No registered account? Sign up</span>
+            </div>
+        </div>
+    </body>
+</html>

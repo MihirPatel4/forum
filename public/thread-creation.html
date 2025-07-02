@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Create a thread</title>
+        <link rel="stylesheet" href="forum.css">
+        <script src="thread-creation.js" defer></script>
+    </head>
+    <body>
+        <nav id="navbar">
+            <div id="navbar-left">
+                <a href="index.html">Mihir Web Forum</a>
+            </div>
+            <div id="navbar-right">
+                <a id="login-button" href="login.html">Log in/Sign up</a>
+                <a id="profile-button" href="login.html">Profile</a>
+            </div>
+        </nav>
+        <div id="form-container">
+            <div id="creation-box">
+                <h2>Create a thread:</h2>
+                <label for="title">Title:</label>
+                <input id="thread-title-input" name="title" required>
+                <label for="content"></label>
+                <textarea id="post-content-input" name="content" placeholder="Write your post content here..." required></textarea>
+                <button id="create-thread-button" type="submit">Create Thread</button>
+                <p id="error-text"></p>
+            </div>
+        </div>
+    </body>
+</html>

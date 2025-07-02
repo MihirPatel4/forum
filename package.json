@@ -1,0 +1,22 @@
+{
+  "name": "forum",
+  "version": "1.0.0",
+  "description": "A web forum",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --env-file=.env --experimental-strip-types ./src/server.js"
+  },
+  "keywords": [],
+  "author": "Mihir Patel",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.10.1",
+    "prisma": "^6.10.1"
+  }
+}
