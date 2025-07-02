@@ -1,3 +1,5 @@
+import { format, formatDistanceToNow } from 'https://cdn.skypack.dev/date-fns@4.1.0'
+
 const token = localStorage.getItem('token')
 const loginButton = document.getElementById('login-button')
 const profileButton = document.getElementById('profile-button')
@@ -121,7 +123,7 @@ function renderProfile(profileData) {
     document.title = profileData.user.name
     document.getElementById('avatar').src = profileData.avatar
     document.getElementById('profile-name').textContent = profileData.user.name
-    document.getElementById('profile-join-date').textContent = `Join Date: ${profileData.user.createdAt}`
+    document.getElementById('profile-join-date').textContent = `Join Date: ${format(profileData.user.createdAt, 'MMMM d, yyyy')}`
     document.getElementById('profile-bio').textContent = profileData.bio
 
     threads.forEach((thread) => {
@@ -152,7 +154,7 @@ function renderProfile(profileData) {
         threadLink.appendChild(threadTitle)
 
         let bottomDetails = document.createElement('span')
-        bottomDetails.textContent = `${thread.createdAt} • ${thread.posts.length} posts`
+        bottomDetails.textContent = `${formatDistanceToNow(thread.createdAt, {addSuffix: true})} • ${thread.posts.length} posts`
         cardDetails.appendChild(bottomDetails)
         
         profileThreads.appendChild(card)
@@ -178,7 +180,7 @@ function renderProfile(profileData) {
         postThreadReference.appendChild(postThreadLink)
 
         let postDate = document.createElement('p')
-        postDate.textContent = `${post.createdAt}`
+        postDate.textContent = `${formatDistanceToNow(post.createdAt, {addSuffix: true})}`
         postTopDetails.appendChild(postDate)
 
         let postContent = document.createElement('p')
