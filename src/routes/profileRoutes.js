@@ -43,7 +43,7 @@ router.put('/:id/bio', authMiddleware, async (req, res) => {
     const {bio} = req.body
 
     try {
-        const updatedProfile = await prisma.profile.update({
+        await prisma.profile.update({
             where: {id: parseInt(id)},
             data: {bio}
         })
@@ -61,7 +61,7 @@ router.put('/:id/avatar', authMiddleware, async (req, res) => {
     const {avatar} = req.body
 
     try {
-        const updatedProfile = await prisma.profile.update({
+        await prisma.profile.update({
             where: {id: parseInt(id)},
             data: {avatar}
         })
