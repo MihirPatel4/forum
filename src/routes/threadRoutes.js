@@ -99,26 +99,6 @@ router.post('/:id', authMiddleware, async (req, res) => {
     }
 })
 
-//delete a post in a thread
-router.delete('/post/:id', authMiddleware, async (req, res) => {
-    const {id} = req.params
-
-    try {
-        await prisma.post.delete({
-            where: {
-                id: parseInt(id),
-                authorId: req.authorId,
-                threadId: req.threadId
-            }
-        })
-        res.status(200).send({message: 'Post deleted'})
-    }
-    catch (err) {
-        console.error(err)
-        res.status(500).send({message: 'Failed to delete post'})
-    }
-})
-
 //get one thread
 router.get('/:id', async (req, res) => {
     const {id} = req.params
@@ -155,6 +135,28 @@ router.get('/latest', async (req, res) => {
     res.json(latestThread)
 })
 
-//TODO: EDIT A POST
+//edit a post
+router.put('/:id/:postId', authMiddleware, async (req, res) => {
+    const {id, postId} = req.params
+    const {postContent} = req.body
+
+    try {
+        await prisma.post.update({
+            where: {
+                threadId: id,
+                id: postId
+            },
+            data: {
+                postContent,
+                lastModified: Date.now()
+            }
+        })
+        res.status(200).send({message: 'Post edited successfully'})
+    }
+    catch (err) {
+        console.error(err)
+        res.status(500).send({message: 'Failed to edit post'})
+    }
+})
 
 export default router
