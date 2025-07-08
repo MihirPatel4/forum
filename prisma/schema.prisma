@@ -40,15 +40,16 @@ model Thread {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    Int
-  thread      Thread    @relation(fields: [threadId], references: [id])
-  threadId    Int
-  content     String
-  postNumber  Int
-  images      String[]
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      Int
+  thread        Thread    @relation(fields: [threadId], references: [id])
+  threadId      Int
+  content       String
+  postNumber    Int
+  images        String[]
+  lastModified  DateTime?
 
   @@unique([threadId, postNumber])
 }
