@@ -8,6 +8,7 @@ const editProfileOptions = document.getElementById('edit-profile-options')
 
 const URLparams = new URLSearchParams(window.location.search)
 const profileId = URLparams.get('id')
+let responseId
 
 async function isTokenValid() {
     //if user is not logged in
@@ -23,9 +24,10 @@ async function isTokenValid() {
         if (!response.ok) {
             return false
         }
-        //let user access their profile
+        //get the id of the user
         const {userId} = await response.json()
-        profileButton.href = `profile.html?id=${userId}`
+        responseId = userId
+        
         return true
     }
     catch (err) {
@@ -44,11 +46,12 @@ async function authUI() {
             localStorage.removeItem('token')
             window.location.reload()
         })
-
+        //let user access their profile
+        profileButton.href = `profile.html?id=${responseId}`
         profileButton.style.display = 'inline'
 
-        //let user edit their profile
-        document.getElementById('edit-profile-dropdown').style.display = 'block'
+        //let user edit the profile if it is theirs
+        if (profileId == responseId) {document.getElementById('edit-profile-dropdown').style.display = 'block'}
     }
 }
 
