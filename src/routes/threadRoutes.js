@@ -136,19 +136,19 @@ router.get('/latest', async (req, res) => {
 })
 
 //edit a post
-router.put('/:id/:postId', authMiddleware, async (req, res) => {
-    const {id, postId} = req.params
-    const {postContent} = req.body
+router.put('/:threadId/:postId', authMiddleware, async (req, res) => {
+    const {threadId, postId} = req.params
+    const {content} = req.body
 
     try {
         await prisma.post.update({
             where: {
-                threadId: id,
-                id: postId
+                threadId: parseInt(threadId),
+                id: parseInt(postId)
             },
             data: {
-                postContent,
-                lastModified: Date.now()
+                content,
+                lastModified: new Date()
             }
         })
         res.status(200).send({message: 'Post edited successfully'})
@@ -156,6 +156,30 @@ router.put('/:id/:postId', authMiddleware, async (req, res) => {
     catch (err) {
         console.error(err)
         res.status(500).send({message: 'Failed to edit post'})
+    }
+})
+
+//get one post
+router.get('/:threadId/:postId', async (req, res) => {
+    const {threadId, postId} = req.params
+
+    try {
+        const post = await prisma.post.findUnique({
+            where: {
+                threadId: parseInt(threadId),
+                id: parseInt(postId)
+            },
+            include: {
+                author: {
+                    select: {id: true, name: true, profile: true, role: true, createdAt: true}
+                }       
+            }
+        })
+        res.status(200).json(post)
+    }
+    catch (err) {
+        console.error(err)
+        res.status(404).send({message: 'Post not found'})
     }
 })
 
