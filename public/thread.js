@@ -1,6 +1,7 @@
 import { format, formatDistanceToNow } from 'https://cdn.skypack.dev/date-fns@4.1.0'
 
 const token = localStorage.getItem('token')
+let responseId
 
 let isLoading = false
 let posts = []
@@ -27,7 +28,7 @@ async function isTokenValid() {
         }
         //let user access their profile
         const {userId} = await response.json()
-        profileButton.href = `profile.html?id=${userId}`
+        responseId = userId
         return true
     }
     catch (err) {
@@ -46,7 +47,11 @@ async function authUI() {
             localStorage.removeItem('token')
             window.location.reload()
         })
+
+        //let user access their profile
+        profileButton.href = `profile.html?id=${responseId}`
         profileButton.style.display = 'inline'
+
         //let user add a post to the thread if they are logged in
         document.getElementById('add-post-container').style.display = 'block';
     }
@@ -68,72 +73,157 @@ function renderThread(threadData) {
     document.title = threadData.title
 
     posts.forEach((post) => {
-        let postDiv = document.createElement('div')
+        const postDiv = document.createElement('div')
         postDiv.className = 'post'
-        document.getElementById('thread-container').appendChild(postDiv)
 
-        let postDetails = document.createElement('div')
-        postDetails.className = 'post-details'
-        postDiv.appendChild(postDetails)
+        postDiv.innerHTML = `
+            <div class="post">
+                <div class="post-details">
+                    <span>#${post.postNumber}</span>
+                    <span>${formatDistanceToNow(post.createdAt, {addSuffix: true})}</span>
+                </div>
+                <div class="post-main">
+                    <div class="author-details">
+                        <div class="post-avatar-container">
+                            <img class="post-avatar" src=${post.author.profile.avatar}>
+                        </div>
+                        <a class="post-author-name" href="profile.html?id=${post.author.id}">${post.author.name}</a>
+                        <p class="author-join-date">Join Date: ${format(post.author.createdAt, 'MMMM d, yyyy')}</p>
+                    </div>
+                    <div class="post-content" id="post-${post.postNumber}-content"></div>
+                </div>
+            </div>`
 
-        let postNumber = document.createElement('span')
-        postNumber.textContent = `#${post.postNumber}`
-        postDetails.appendChild(postNumber)
-
-        let postTime = document.createElement('span')
-        postTime.textContent = formatDistanceToNow(post.createdAt, {addSuffix: true})
-        postDetails.appendChild(postTime)
-
-        let postMain = document.createElement('div')
-        postMain.className = 'post-main'
-        postDiv.appendChild(postMain)
-
-        let authorDetails = document.createElement('div')
-        authorDetails.className = 'author-details'
-        postMain.appendChild(authorDetails)
-
-        let avatarContainer = document.createElement('div')
-        avatarContainer.className = 'post-avatar-container'
-        authorDetails.appendChild(avatarContainer)
-
-        let avatar = document.createElement('img')
-        avatar.className = 'post-avatar'
-        avatar.src = post.author.profile.avatar
-        avatarContainer.appendChild(avatar)
-
-        let authorName = document.createElement('h3')
-        authorName.className = 'post-author-name'
-        authorName.textContent = post.author.name
-        authorDetails.appendChild(authorName)
-
-        let joinDate = document.createElement('p')
-        joinDate.className = 'author-join-date'
-        joinDate.textContent = `Join Date: ${format(post.author.createdAt, 'MMMM d, yyyy')}`
-        authorDetails.appendChild(joinDate)
-
-        let postContent = document.createElement('div')
-        postContent.className = 'post-content'
+        let postContent = postDiv.querySelector('.post-content')
         postContent.textContent = post.content
-        postMain.appendChild(postContent)
+
+        //show last modified text if post was edited
+        let lastModified = ''
+        if (post.lastModified) {lastModified = `Last modified ${formatDistanceToNow(post.lastModified, {addSuffix: true})}`}
+
+        postContent.innerHTML += `
+        <div class="post-bottom-bar" id="post-${post.postNumber}-bottom-bar">
+            <span class="last-modified">${lastModified}</span>
+        </div>`
+
+        //let user edit or delete post if it is their post
+        if (post.author.id == responseId) {
+            postContent.querySelector('.post-bottom-bar').innerHTML += `
+                <div class="post-options-dropdown">
+                    <button class="post-options" id="post-${post.postNumber}-options">...</button>
+                    <div class="post-options-menu" id="post-${post.postNumber}-options-menu">
+                        <a class="edit-post" id="edit-post-${post.id}" href="#">Edit</a>
+                        <a class="delete-post" id="delete-post-${post.id}" href="#">Delete</a>
+                    </div>
+                </div>`
+        }
+
+        document.getElementById('thread-container').appendChild(postDiv);
     })
 
+    addButtonFunctionality()
 }
 
 authUI()
 fetchThread()
 
+function addButtonFunctionality() {
+    const optionsButtons = document.getElementsByClassName('post-options')
+    for (let button of optionsButtons) {
+        button.addEventListener('click', (event) => {
+            event.stopPropagation()
+            const postNumber = event.currentTarget.id.split('-')[1]
+            document.getElementById(`post-${postNumber}-options-menu`).style.display = 'block'
+        })
+    }
+
+    const editPostButtons = document.getElementsByClassName('edit-post')
+    for (let button of editPostButtons) {
+        button.addEventListener('click', (event) => {
+            event.preventDefault()
+            const postId = event.currentTarget.id.split('edit-post-')[1]
+            editModal(parseInt(postId))
+        })
+    }
+
+    const deletePostButtons = document.getElementsByClassName('delete-post')
+    for (let button of deletePostButtons) {
+        button.addEventListener('click', (event) => {
+            event.preventDefault()
+            const postId = event.currentTarget.id.split('delete-post-')[1]
+            deleteModal(parseInt(postId))
+        })
+    }
+}
+
+//clicking anywhere closes dropdown menu
+document.addEventListener('click', () => {
+    const optionsMenus = document.getElementsByClassName('post-options-menu')
+    for (let menu of optionsMenus) {
+        menu.style.display = 'none'
+    }
+})
+
+//open modals
+async function editModal(postId) {
+    //get the post content of the post being edited
+    const response = await fetch(`threads/${threadId}/${postId}`)
+    const oldPost = await response.json()
+    const {content} = oldPost
+
+    document.getElementById('edit-post-input').textContent = content
+    document.getElementById('edit-post-modal').style.display = 'block'
+    document.getElementById('submit-edit').addEventListener('click', () => {editPost(postId)})
+}
+function deleteModal(postId) {
+    document.getElementById('delete-post-modal').style.display = 'block'
+    document.getElementById('submit-delete').addEventListener('click', deletePost(postId))
+}
+
+//close modals
+document.getElementById('close-edit-modal').addEventListener('click', () => {
+    document.getElementById('edit-post-modal').style.display = 'none'
+})
+document.getElementById('close-delete-modal').addEventListener('click', () => {
+    document.getElementById('delete-post-modal').style.display = 'none'
+})
+
+async function editPost(postId) {
+    const newContent = document.getElementById('edit-post-input').value
+
+    if (!newContent) {return}
+
+    try {
+        await fetch(`threads/${threadId}/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
+            body: JSON.stringify({content: newContent})
+        })
+        window.location.reload()
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+
+async function deletePost(postId) {
+    //TODO: DELETE FUNCTIONALITY
+}
+
 document.getElementById('add-post-button').addEventListener('click', async () => {
     const postContent = document.getElementById('post-content-input').value
 
-    //leave the function if post content not present
     if (!postContent) {
-        errorText.textContent = 'The post needs to have content.'
+        errorText.textContent = 'Cannot submit blank post'
         errorText.style.display = 'block'
         return
     }
 
     try {
-        const response = await fetch(`threads/${threadId}`, {
+        await fetch(`threads/${threadId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
