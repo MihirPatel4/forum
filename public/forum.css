@@ -143,6 +143,11 @@ label, input, #login, #create-thread-button {
     margin-left: 20px;
 }
 
+.post-author-name {
+    color: white;
+    font-size: 18px;
+}
+
 .author-join-date {
     font-size: 14px;
 }
@@ -161,6 +166,55 @@ label, input, #login, #create-thread-button {
     border: solid 1px rgb(119, 119, 119);
     margin-right: 20px;
     padding: 20px;
+    white-space: pre-wrap;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    white-space: normal;
+    margin-top: auto;
+}
+
+.last-modified {
+    color: rgb(119, 119, 119);
+    font-size: 11px;
+    margin-top: auto;
+}
+
+.post-options-dropdown {
+    margin-top: auto;
+}
+
+.post-options {
+    border: none;
+    color: rgb(161, 161, 161);
+    background-color: rgb(29, 29, 29);
+    font-size: 30px;
+    cursor: pointer;
+    position: relative;
+}
+
+.post-options-menu {
+    display: none;
+    position: absolute;
+    width: 110px;
+    z-index: 1;
+}
+
+.post-options-menu a {
+    text-decoration: none;
+    display: block;
+    color: white;
+    background-color: rgb(78, 78, 78);
+    padding: 10px 14px;
+}
+
+#edit-post-input {
+    width: 300px;
+    height: 70px;
 }
 
 #thread-page-title {
@@ -181,6 +235,7 @@ label, input, #login, #create-thread-button {
 }
 
 /*profile page*/
+
 #profile-container {
     background-color: rgb(29, 29, 29);
     color: white;
@@ -239,7 +294,7 @@ label, input, #login, #create-thread-button {
 #edit-profile-dropdown:hover #edit-profile-options {display: block;}
 #edit-profile-options a:hover {background-color: rgb(87, 87, 87);}
 
-#bio-modal, #avatar-modal {
+#bio-modal, #avatar-modal, #edit-post-modal, #delete-post-modal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -249,6 +304,7 @@ label, input, #login, #create-thread-button {
     left: 0;
     top: 0;
     background-color: rgba(0, 0, 0, 0.4);
+    color: white;
 }
 
 .modal-content {
